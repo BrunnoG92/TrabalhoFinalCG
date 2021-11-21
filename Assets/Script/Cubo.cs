@@ -21,10 +21,15 @@ public class Cubo : MonoBehaviour
         PraFrente = new Vector3(0, 0, 1) * Velocidade; // Vetor de movimento. Sempre movimenta pra frente
         if (Input.GetKeyDown (KeyCode.Space) && Qtnd_Pulo > 0)
         {
-            P_Cubo.AddForce(new Vector3(0, 2, 0) * Forca_Pulo, ForceMode.Impulse);
+            P_Cubo.AddForce(new Vector3(0, 5, 0) * Forca_Pulo, ForceMode.Impulse);
             print("Pulou");
             Qtnd_Pulo--;
         }
+        if (Qtnd_Pulo == 0)
+        {
+            P_Cubo.AddForce(new Vector3(0, -0.03f, 0) * Forca_Pulo, ForceMode.Impulse); // Força negativa, aumentar vel queda quando no ar
+        }
+        
 
       
     }
