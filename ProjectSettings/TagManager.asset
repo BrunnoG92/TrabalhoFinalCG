@@ -7,6 +7,7 @@ TagManager:
   - Cenario
   - Moeda
   - Inimigo
+  - Item_Cenario
   layers:
   - Default
   - TransparentFX

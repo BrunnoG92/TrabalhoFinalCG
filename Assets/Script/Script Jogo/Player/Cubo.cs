@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,7 +10,7 @@ public class Cubo : MonoBehaviour
     private Rigidbody P_Cubo;
     public float Velocidade = 1f;
     private Vector3 PraFrente;
-    public int Qtnd_Pulo =1;
+    public int Qtnd_Pulo = 1;
     public float Forca_Pulo = 1;
     public AudioSource SomMoeda;
     public AudioSource SomImpacto;
@@ -38,25 +37,29 @@ public class Cubo : MonoBehaviour
 
     void Update()
     {
-       
+
         PraFrente = new Vector3(0, 0, 1) * Velocidade; // Vetor de movimento. Sempre movimenta pra frente
-        if (Input.GetKeyDown (KeyCode.Space) && Qtnd_Pulo > 0)
+        if (Input.GetKeyDown(KeyCode.Space) && Qtnd_Pulo > 0)
         {
-            P_Cubo.AddForce(new Vector3(0, 7, 0) * Forca_Pulo, ForceMode.Impulse);
+            P_Cubo.AddForce(new Vector3(0, 11, 0) * Forca_Pulo, ForceMode.Impulse);
             print("Pulou");
             Qtnd_Pulo--;
+
+
+
+
         }
         if (Qtnd_Pulo == 0)
         {
-            P_Cubo.AddForce(new Vector3(0, -0.03f, 0) * Forca_Pulo, ForceMode.Impulse); // Força negativa, aumentar vel queda quando no ar
+            P_Cubo.AddForce(new Vector3(0, -0.04f, 0) * Forca_Pulo, ForceMode.Impulse); // Força negativa, aumentar vel queda quando no ar
         }
 
         // Cronometro
-            Tempo += Time.deltaTime;
-            TimeSpan time = TimeSpan.FromSeconds(Tempo);
-            Tempo_Decorrido.text = time.ToString(@"hh\:mm\:ss");
+        Tempo += Time.deltaTime;
+        TimeSpan time = TimeSpan.FromSeconds(Tempo);
+        Tempo_Decorrido.text = time.ToString(@"mm\:ss");
 
-        
+
 
 
 
@@ -65,14 +68,15 @@ public class Cubo : MonoBehaviour
 
     IEnumerator TrocarCenario()
     {   // IE numerator para aguardar antes da troca do cenário. usado para tocar o som de colisão com o inimigo
+
         yield return new WaitForSeconds(0.7f);
         MudarCena();
         yield return new WaitForSeconds(0.1f);
         Destroy(this.gameObject);
         Destroy(Camera.main.gameObject);
-
-
     }
+
+
 
 
 
@@ -82,36 +86,30 @@ public class Cubo : MonoBehaviour
     }
 
     private void OnCollisionEnter(Collision collision)
-    {   
+    {
         var Posicao_Cubo = collision.gameObject.tag;
         if (Posicao_Cubo == "Cenario")
         {
-           // Cubo está no chão. A quantidade de pulo é definida em 1 
+            // Cubo está no chão. A quantidade de pulo é definida em 1 
             Qtnd_Pulo = 1;
         }
-        else
-        {
-            PraFrente = new Vector3(0, -1, 1) * Velocidade; // Vetor de movimento. Sempre movimenta pra frente
-           
-        }
-        if (Posicao_Cubo == "Inimigo")
+
+
+        else if (Posicao_Cubo == "Inimigo")
         {
             // Colisão com inimigo
             SomImpacto.Play();
             StartCoroutine(TrocarCenario());
             Destroy(collision.gameObject);
-           
-           
-
-
 
         }
 
+
     }
-   
+
     private void OnTriggerEnter(Collider other)
     {
-        
+
         var Posicao = other.gameObject.tag;
         if (Posicao == "Moeda")
         {
@@ -119,7 +117,18 @@ public class Cubo : MonoBehaviour
             SomMoeda.Play();
             Pontos += 10;
             PegaMoeda();
-          
+        }
+
+
+
+
+    }
+    private void OnCollisionExit(Collision collision)
+    {   // Não mais colindo com plataformas no cenário. Velocidade da queda
+        var Posicao = collision.gameObject.tag;
+        if (Posicao == "Item_Cenario")
+        {
+            P_Cubo.AddForce(new Vector3(0, -3, 0) * Forca_Pulo, ForceMode.Impulse);
         }
     }
 
