@@ -19,12 +19,17 @@ public class Cubo : MonoBehaviour
     private float Tempo;
     private int Pontos;
     public string NomeDaCena;
+    private Animator Anim;
+    private float horizontalMove;
+   
+   
 
 
     void Start()
     {
         Pontos = 0;
         P_Cubo = GetComponent<Rigidbody>();
+        Anim = GetComponent<Animator>();
         PegaMoeda();
 
     }
@@ -36,31 +41,42 @@ public class Cubo : MonoBehaviour
     }
 
     void Update()
-    {
+    {   
+        // Virar para direita e esquerda
+        if (Input.GetKey(KeyCode.RightArrow ) && Qtnd_Pulo > 0)
+        {
+            transform.position = new Vector3(transform.position.x + 0.03f,
+            transform.position.y, transform.position.z);
+        }
+        if (Input.GetKey(KeyCode.LeftArrow) && Qtnd_Pulo > 0)
+        {
+            transform.position = new Vector3(transform.position.x - 0.03f,
+            transform.position.y, transform.position.z);
+        }
 
         PraFrente = new Vector3(0, 0, 1) * Velocidade; // Vetor de movimento. Sempre movimenta pra frente
         if (Input.GetKeyDown(KeyCode.Space) && Qtnd_Pulo > 0)
         {
             P_Cubo.AddForce(new Vector3(0, 11, 0) * Forca_Pulo, ForceMode.Impulse);
+            Anim.SetFloat("Pulo", 2);
             print("Pulou");
             Qtnd_Pulo--;
-
-
-
-
         }
+
         if (Qtnd_Pulo == 0)
         {
             P_Cubo.AddForce(new Vector3(0, -0.04f, 0) * Forca_Pulo, ForceMode.Impulse); // Força negativa, aumentar vel queda quando no ar
         }
-
+       
         // Cronometro
         Tempo += Time.deltaTime;
         TimeSpan time = TimeSpan.FromSeconds(Tempo);
         Tempo_Decorrido.text = time.ToString(@"mm\:ss");
 
-
-
+        // animacao
+        horizontalMove = Input.GetAxisRaw("Horizontal");
+        Anim.SetFloat("horizontalMove", horizontalMove);
+       
 
 
 
